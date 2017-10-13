@@ -1,0 +1,23 @@
+version: '3'
+
+services:
+  app:
+    build: .
+    ports:
+        - "2252"
+    volumes:
+      - ./:/app/
+    command: node index.js
+    # network_mode: "bridge"
+  haproxy:
+    image: eeacms/haproxy
+    depends_on:
+      - app
+    ports:
+      - "80:5000"
+      - "1936:1936"
+    environment:
+      # BACKEND_NAME: "app:12228"
+      BACKENDS: "app:2252"
+      # BACKENDS_PORT: 12228
+      DNS_ENABLED: "true"
